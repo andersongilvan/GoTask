@@ -16,7 +16,7 @@
     "zod": "3.23.8"
   },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/server.ts --watch src",
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "biome check --write"
