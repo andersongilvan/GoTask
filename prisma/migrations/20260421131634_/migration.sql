@@ -2,7 +2,13 @@
 CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'SELLER');
 
 -- CreateEnum
-CREATE TYPE "TaskStatus" AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED');
+CREATE TYPE "UserStatus" AS ENUM ('ENABLED', 'DISABLED');
+
+-- CreateEnum
+CREATE TYPE "TaskStatus" AS ENUM ('pending', 'in_progress', 'completed');
+
+-- CreateEnum
+CREATE TYPE "TaskPriority" AS ENUM ('medium', 'high', 'urgent');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -12,6 +18,7 @@ CREATE TABLE "users" (
     "password" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_role" "UserRole" NOT NULL DEFAULT 'SELLER',
+    "user_status" "UserStatus" NOT NULL DEFAULT 'ENABLED',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -23,8 +30,9 @@ CREATE TABLE "task" (
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "status" "TaskStatus" NOT NULL DEFAULT 'PENDING',
-    "userId" TEXT NOT NULL,
+    "status" "TaskStatus" NOT NULL DEFAULT 'pending',
+    "priority" "TaskPriority" NOT NULL DEFAULT 'medium',
+    "user_id" TEXT NOT NULL,
 
     CONSTRAINT "task_pkey" PRIMARY KEY ("id")
 );
@@ -33,4 +41,4 @@ CREATE TABLE "task" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
-ALTER TABLE "task" ADD CONSTRAINT "task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "task" ADD CONSTRAINT "task_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
