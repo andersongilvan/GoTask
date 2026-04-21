@@ -1,6 +1,7 @@
 import type { Prisma, User } from '@prisma/client'
 import { prismaClient } from '@/config/prisma'
-import type { UserRepository } from '@/repository/user-repository'
+import type { UserRepository } from '@/domain/user/repositories/user-repository'
+import { UserStatus } from '@/enums/user-status'
 
 export class UserRepositoryImpl implements UserRepository {
 	async findAll(): Promise<User[]> {
@@ -28,7 +29,14 @@ export class UserRepositoryImpl implements UserRepository {
 	async disable(userId: string): Promise<void> {
 		await prismaClient.user.update({
 			where: { id: userId },
-			data: { userStatus: 'DISABLED' },
+			data: { userStatus: UserStatus.DISABLED },
+		})
+	}
+
+	async enable(userId: string): Promise<void> {
+		await prismaClient.user.update({
+			where: { id: userId },
+			data: { userStatus: UserStatus.ENABLED },
 		})
 	}
 }

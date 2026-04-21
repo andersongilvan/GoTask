@@ -1,10 +1,10 @@
-import type { UserResponse } from '@/http/response/user/user-response'
-import type { UserRepository } from '@/repository/user-repository'
+import type { UserOutput } from '@/domain/user/dto/user-output'
+import type { UserRepository } from '@/domain/user/repositories/user-repository'
 
-export class FindAllUsersService {
+export class FindAllUsersUseCase {
 	constructor(private userRepository: UserRepository) {}
 
-	async execute(): Promise<UserResponse[]> {
+	async execute(): Promise<UserOutput[]> {
 		const userList = await this.userRepository.findAll()
 
 		return userList.map((user) => ({

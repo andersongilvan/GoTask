@@ -1,22 +1,23 @@
 import type { NextFunction, Request, Response } from 'express'
 import { verify } from 'jsonwebtoken'
 import { env } from '@/config/env'
-import { AuthenticationError } from '@/infra/errors/authentication-error'
+import { AuthenticationError } from '@/domain/shared/errors/authentication-error'
+import type { UserRole } from '@/enums/user-role'
 
 type TokenPayload = {
 	sub: string
-	role: string
+	role: UserRole
 }
 
 export function ensureAuthentication(request: Request, _response: Response, next: NextFunction) {
 	// Formato esperado do header: "Bearer <token>".
 	const authHeader = request.headers.authorization
 
-	try {
-		if (!authHeader) {
-			throw new AuthenticationError('Token nao informado.')
-		}
+	if (!authHeader) {
+		throw new AuthenticationError('Token nao informado.')
+	}
 
+	try {
 		const [, token] = authHeader.split(' ')
 
 		// O subject (sub) do token representa o id do usuario autenticado.

@@ -1,21 +1,19 @@
 import { Router } from 'express'
-import { authUserController } from '../controller/user/auth-user-controller'
-import { createUserController } from '../controller/user/create-user-controller'
-import { disableUserController } from '../controller/user/disable-user-controller'
-import { findAllUsersController } from '../controller/user/find-all-users-controller'
-import { findUserByIdController } from '../controller/user/find-user-by-id-controller'
+import { UserRole } from '@/enums/user-role'
+import { UserController } from '../controller/user/user-controller'
 import { ensureAuthentication } from '../middlewares/ensure-authentication'
+import { verifyAuthorization } from '../middlewares/verify-authorization'
 
 const userRoutes = Router()
+const userController = new UserController()
 
-// Rotas publicas
-userRoutes.post('/', createUserController)
-userRoutes.post('/auth', authUserController)
+userRoutes.post('/auth', userController.auth)
 
-// Todas as rotas abaixo exigem um JWT valido.
-userRoutes.use(ensureAuthentication)
-userRoutes.get('/', findAllUsersController)
-userRoutes.get('/:id', findUserByIdController)
-userRoutes.put('/:id', disableUserController)
+userRoutes.use(ensureAuthentication, verifyAuthorization([UserRole.ADMIN]))
+userRoutes.post('/', userController.create)
+userRoutes.get('/', userController.findAll)
+userRoutes.get('/:id', userController.findById)
+userRoutes.put('/:id/disable', userController.disable)
+userRoutes.put('/:id/enable', userController.enable)
 
 export { userRoutes }

@@ -5,5 +5,6 @@ export interface UserRepository {
 	findByEmail(email: string): Promise<User | null>
 	findById(userId: string): Promise<User | null>
 	disable(userId: string): Promise<void>
+	enable(userId: string): Promise<void>
 	findAll(): Promise<User[]>
 }
